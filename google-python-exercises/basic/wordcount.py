@@ -38,6 +38,7 @@ print_words() and print_top().
 """
 
 import sys
+from operator import itemgetter
 
 # +++your code here+++
 # Define print_words(filename) and print_top(filename) functions.
@@ -49,9 +50,37 @@ import sys
 
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
+
+def count_words(filename):
+    words = {}
+    file = open(filename, 'r')
+    for line in file:
+        sentence = line.split(' ')
+        for word in sentence:
+            word = word.strip().lower()
+            if word in words:
+                words[word] += 1
+            else: words[word] = 1
+    file.close()
+    return words
+
+
+def print_words(filename):
+    sum_touples = sorted(count_words(filename).items())
+
+    for touple in sum_touples:
+        print(f"{touple[0]} sum: {touple[1]}")
+
+
+def print_top(filename):
+    sum_touples = sorted(count_words(filename).items(), key=itemgetter(1), reverse=True)
+
+    for touple in sum_touples:
+        print(f"{touple[0]} sum: {touple[1]}")
+
 def main():
   if len(sys.argv) != 3:
-    print 'usage: ./wordcount.py {--count | --topcount} file'
+    print('usage: ./wordcount.py {--count | --topcount} file')
     sys.exit(1)
 
   option = sys.argv[1]
@@ -61,7 +90,7 @@ def main():
   elif option == '--topcount':
     print_top(filename)
   else:
-    print 'unknown option: ' + option
+    print ('unknown option: ' + option)
     sys.exit(1)
 
 if __name__ == '__main__':
